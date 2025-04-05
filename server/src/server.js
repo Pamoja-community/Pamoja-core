@@ -1,12 +1,19 @@
-import express from "express";
-import bodyParser from "body-parser";
-import cors from "cors";
-import morgan from "morgan";
-import mongoose from "mongoose";
+const dotenv = require('dotenv')
+dotenv.config();
+
+const express = require ("express");
+const bodyParser = require ("body-parser");
+const cors = require ("cors");
+const morgan = require ("morgan");
+const mongoose = require ("mongoose");
+
+const userRoute = require ("./Routes/userRoute");
+
 
 const app = express();
 const Port = process.env.PORT || 5000;
 const dbUri = process.env.MONGODB_URI;
+console.log(dbUri);
 
 const corsOptions = {
   origin: "*",
@@ -17,6 +24,9 @@ app.use(cors(corsOptions));
 app.use(morgan("dev"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+app.use('/api/users', userRoute);
+
 
 mongoose.connect(dbUri);
 
