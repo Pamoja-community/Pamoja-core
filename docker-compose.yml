@@ -113,8 +113,6 @@ services:
       - mongo1
     networks:
       - pamoja-network
-    profiles:
-      - dev
 
   mongo-init:
     image: mongo:6.0
