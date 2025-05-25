@@ -45,24 +45,20 @@ const slides = [
 export default function HeroSection() {
   const [current, setCurrent] = useState(0);
 
-  // Auto-advance timer
   useEffect(() => {
     const timer = setInterval(() => {
-      setCurrent((c) => (c + 1) % slides.length);
+      setCurrent(c => (c + 1) % slides.length);
     }, 5000);
     return () => clearInterval(timer);
   }, []);
 
-  // Handlers for swipe gestures
   const onSwiped = useCallback(
     ({ dir }) => {
-      if (dir === 'Left') {
-        setCurrent((c) => (c + 1) % slides.length);
-      } else if (dir === 'Right') {
-        setCurrent((c) => (c - 1 + slides.length) % slides.length);
-      }
+      if (dir === 'Left') setCurrent(c => (c + 1) % slides.length);
+      else if (dir === 'Right')
+        setCurrent(c => (c - 1 + slides.length) % slides.length);
     },
-    [setCurrent]
+    []
   );
 
   const swipeHandlers = useSwipeable({
@@ -72,24 +68,26 @@ export default function HeroSection() {
     trackMouse: true,
   });
 
-  const { heading, description, image, ctaPrimary, ctaSecondary } =
-    slides[current];
-
   return (
     <section
       id="hero"
-      className="relative overflow-hidden bg-white dark:bg-gray-900 pt-16"
       {...swipeHandlers}
+      className="relative overflow-hidden bg-white dark:bg-gray-900 pt-16 md:pt-0"
     >
+      {/* Slide Container */}
       <div className="relative h-[500px]">
         {slides.map((slide, idx) => (
           <div
             key={idx}
-            className={`absolute inset-0 transition-opacity duration-700 ease-in-out
-              ${idx === current ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
+            className={`absolute inset-0 flex items-center transition-opacity duration-700 ease-in-out ${
+              idx === current ? 'opacity-100 z-10' : 'opacity-0 z-0'
+            }`}
           >
+            {/* overlay */}
             <div className="absolute inset-0 bg-gradient-to-r from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 opacity-50" />
-            <div className="relative container mx-auto px-6 lg:px-8 h-full flex flex-col lg:flex-row items-center justify-center lg:justify-between">
+
+            {/* Content */}
+            <div className="relative container mx-auto px-6 lg:px-8 flex flex-col lg:flex-row items-center justify-center lg:justify-between h-full">
               {/* Text */}
               <div className="text-center lg:text-left max-w-lg z-20">
                 <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-gray-900 dark:text-white leading-tight">
@@ -100,24 +98,25 @@ export default function HeroSection() {
                 </p>
                 <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                   <a
-                    href={ctaPrimary.href}
+                    href={slide.ctaPrimary.href}
                     className="px-6 py-3 bg-green-600 text-white rounded-md font-medium hover:bg-green-700 transition"
                   >
-                    {ctaPrimary.title}
+                    {slide.ctaPrimary.title}
                   </a>
                   <a
-                    href={ctaSecondary.href}
+                    href={slide.ctaSecondary.href}
                     className="px-6 py-3 border border-green-600 text-green-600 rounded-md font-medium hover:bg-green-50 dark:hover:bg-green-900 transition"
                   >
-                    {ctaSecondary.title}
+                    {slide.ctaSecondary.title}
                   </a>
                 </div>
               </div>
+
               {/* Image */}
               <div className="relative mt-10 lg:mt-0 flex justify-center lg:justify-end z-30">
                 <div className="shadow-2xl rounded-lg overflow-hidden transform lg:-translate-y-10 lg:translate-x-10">
                   <img
-                    src={image}
+                    src={slide.image}
                     alt={slide.heading}
                     className="w-full max-w-md"
                     loading="lazy"
