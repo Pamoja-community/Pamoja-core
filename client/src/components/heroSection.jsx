@@ -1,19 +1,17 @@
 // src/components/HeroSection.jsx
+import React, { useState, useEffect, useCallback } from 'react';
+import { useSwipeable } from 'react-swipeable';
 
-import React, { useState, useEffect } from 'react';
-
-// 1. Import your images
 import PamojaDesktop1 from '../assets/pamoja_desktop1.png';
 import PamojaDesktop2 from '../assets/pamoja_desktop2.png';
-// import PamojaDesktop3 from '../assets/pamoja_desktop3.png';
-// import PamojaDesktop4 from '../assets/pamoja_desktop4.png';
+import PamojaDesktop3 from '../assets/pamoja_desktop3.png';
+import PamojaDesktop4 from '../assets/pamoja_desktop4.png';
 
 const slides = [
   {
     heading: 'Grow Together',
     description:
       'Learn new skills and advance your career through shared knowledge and mentorship.',
-    // 2. Reference the imported asset here
     image: PamojaDesktop1,
     ctaPrimary: { title: 'Get Started', href: '/join' },
     ctaSecondary: { title: 'Learn How', href: '/about' },
@@ -47,6 +45,7 @@ const slides = [
 export default function HeroSection() {
   const [current, setCurrent] = useState(0);
 
+  // Auto-advance timer
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrent((c) => (c + 1) % slides.length);
@@ -54,21 +53,44 @@ export default function HeroSection() {
     return () => clearInterval(timer);
   }, []);
 
-  const { heading, description, image, ctaPrimary, ctaSecondary } = slides[current];
+  // Handlers for swipe gestures
+  const onSwiped = useCallback(
+    ({ dir }) => {
+      if (dir === 'Left') {
+        setCurrent((c) => (c + 1) % slides.length);
+      } else if (dir === 'Right') {
+        setCurrent((c) => (c - 1 + slides.length) % slides.length);
+      }
+    },
+    [setCurrent]
+  );
+
+  const swipeHandlers = useSwipeable({
+    onSwipedLeft: onSwiped,
+    onSwipedRight: onSwiped,
+    preventDefaultTouchmoveEvent: true,
+    trackMouse: true,
+  });
+
+  const { heading, description, image, ctaPrimary, ctaSecondary } =
+    slides[current];
 
   return (
-    <section id="hero" className="relative overflow-hidden bg-white dark:bg-gray-900">
+    <section
+      id="hero"
+      className="relative overflow-hidden bg-white dark:bg-gray-900 pt-16"
+      {...swipeHandlers}
+    >
       <div className="relative h-[500px]">
         {slides.map((slide, idx) => (
           <div
             key={idx}
-            className={`
-              absolute inset-0 transition-opacity duration-1000
-              ${idx === current ? 'opacity-100 z-10' : 'opacity-0 z-0'}
-            `}
+            className={`absolute inset-0 transition-opacity duration-700 ease-in-out
+              ${idx === current ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
           >
             <div className="absolute inset-0 bg-gradient-to-r from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 opacity-50" />
             <div className="relative container mx-auto px-6 lg:px-8 h-full flex flex-col lg:flex-row items-center justify-center lg:justify-between">
+              {/* Text */}
               <div className="text-center lg:text-left max-w-lg z-20">
                 <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-gray-900 dark:text-white leading-tight">
                   {slide.heading}
@@ -91,9 +113,9 @@ export default function HeroSection() {
                   </a>
                 </div>
               </div>
+              {/* Image */}
               <div className="relative mt-10 lg:mt-0 flex justify-center lg:justify-end z-30">
                 <div className="shadow-2xl rounded-lg overflow-hidden transform lg:-translate-y-10 lg:translate-x-10">
-                  {/* 3. Use the variable here */}
                   <img
                     src={image}
                     alt={slide.heading}
@@ -106,13 +128,17 @@ export default function HeroSection() {
           </div>
         ))}
       </div>
+
+      {/* Dots */}
       <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex space-x-2 z-40">
         {slides.map((_, idx) => (
           <button
             key={idx}
             onClick={() => setCurrent(idx)}
-            className={`w-3 h-3 rounded-full ${
-              idx === current ? 'bg-green-600' : 'bg-gray-400 dark:bg-gray-600'
+            className={`w-3 h-3 rounded-full focus:outline-none ${
+              idx === current
+                ? 'bg-green-600'
+                : 'bg-gray-400 dark:bg-gray-600'
             }`}
           />
         ))}
