@@ -8,6 +8,7 @@ export default defineConfig({
   server: {
     port: 3000,
     host: true,
+    allowedHosts: ['.gitpod.io'],
     proxy: {
       "/api": "http://localhost:5000",
       "/socket.io": "http://localhost:5000",
