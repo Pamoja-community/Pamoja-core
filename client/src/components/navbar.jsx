@@ -29,18 +29,13 @@ export default function Navbar() {
   ];
 
   return (
-    <nav className="w-full bg-white dark:bg-gray-900 shadow-md">
+    <nav className="w-full bg-white dark:bg-gray-900 shadow-md relative">
       {/* Mobile Header */}
       <div className="flex items-center justify-between px-4 py-3 md:hidden">
-        {/* Logo + Name */}
+        {/* Logo */}
         <a href="/" className="flex items-center space-x-2">
           <img src="/logo.png" alt="Pamoja" className="h-8 w-auto" />
         </a>
-
-        {/* Theme Toggle
-        <button onClick={toggleTheme} className="text-gray-800 dark:text-gray-200">
-          {theme === 'light' ? <FaMoon size={20} /> : <FaSun size={20} />}
-        </button> */}
 
         {/* Hamburger Menu */}
         <button
@@ -51,9 +46,9 @@ export default function Navbar() {
         </button>
       </div>
 
-      {/* Mobile Dropdown */}
+      {/* Mobile Dropdown (now absolutely positioned) */}
       {menuOpen && (
-        <div className="md:hidden bg-white dark:bg-gray-800 shadow-lg">
+        <div className="md:hidden absolute top-full left-0 right-0 bg-white dark:bg-gray-800 shadow-lg z-50">
           <ul className="flex flex-col">
             {links.map(l => (
               <li key={l.href} className="border-b border-gray-200 dark:border-gray-700">
@@ -101,9 +96,9 @@ export default function Navbar() {
       <div className="hidden md:flex items-center justify-between px-6 py-4">
         {/* Left: Logo + Links */}
         <div className="flex items-center space-x-8">
-            <a href="/" className="flex items-center space-x-2">
+          <a href="/" className="flex items-center space-x-2">
             <img src="/logo.png" alt="Pamoja" className="h-8 w-auto" />
-            </a>
+          </a>
           <ul className="flex items-center space-x-6 text-gray-700 dark:text-gray-300">
             {links.map(l => (
               <li key={l.href}>
@@ -132,7 +127,7 @@ export default function Navbar() {
           </a>
           <a
             href="/join"
-            className="bg-green-600 text-white px-3 py-1 rounded-md text-sm font-semibold hover:bg-green dark:hover:bg-green-900 transition"
+            className="bg-green-600 text-white px-3 py-1 rounded-md text-sm font-semibold hover:bg-green-700 transition"
           >
             Join Now
           </a>
